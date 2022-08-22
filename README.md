@@ -113,9 +113,9 @@ import { Auth, createDirectusHandlers } from '@significa/auth-next'
 import { API_URL } from 'common/constants'
 
 export const auth = new Auth({
-  accessTokenKey: 'activeflow_token',
-  sessionIndicatorKey: 'activeflow_session',
-  refreshTokenKey: 'activeflow_refresh_token',
+  accessTokenKey: 'project_token',
+  sessionIndicatorKey: 'project_session',
+  refreshTokenKey: 'project_refresh_token',
   serverHandlers: createDirectusHandlers({
     url: API_URL,
   }),
