@@ -1,0 +1,12 @@
+{
+  "extends": "./node_modules/@significa/tsconfig-config/index.json",
+  "compilerOptions": {
+    "outDir": "lib/esm",
+    "noEmit": false,
+    "declaration": true,
+    "declarationDir": "./lib/types",
+    "jsx": "react"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "lib"]
+}
