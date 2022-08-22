@@ -12,6 +12,20 @@ This package solves JWT-based authentication by saving the refresh token in an h
 - client-side token refresh (interval + window focus)
 - client-side access token access (e.g.: for client-side API calls)
 
+## Install
+
+Currently this is only available to install directly via GitHub:
+
+```bash
+yarn add significa/significa-auth-next#TAG_HERE
+```
+
+For example:
+
+```bash
+yarn add significa/significa-auth-next#v1.0.0
+```
+
 ## Configuration
 
 Create a `lib/auth.ts` file to create your auth's config.
