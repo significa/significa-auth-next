@@ -26,6 +26,7 @@ export declare type ServerAuthConfig = {
     handlers: AuthServerHandlers;
 };
 export declare class ServerAuth {
+    private isRefreshing;
     private accessTokenKey;
     private refreshTokenKey;
     private sessionIndicatorKey;
@@ -48,7 +49,7 @@ export declare class ServerAuth {
     /**
      * Uses the provided refresh token to get a new session.
      */
-    refreshSession: (res: ServerResponse, refreshToken: string) => Promise<SessionPayload>;
+    refreshSession: (res: ServerResponse, refreshToken: string, shouldRetry?: boolean) => Promise<SessionPayload | undefined>;
     /**
      * This method is meant to be the default export of a dynamic Next's api route (e.g.: pages/api/auth/[path].ts)
      * It will handle the login, refresh and logout requests.
