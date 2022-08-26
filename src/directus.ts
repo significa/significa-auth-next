@@ -1,4 +1,5 @@
 import { AuthServerHandlers } from './server'
+import { sanitizeUrl } from './utils/urls'
 
 export const createDirectusHandlers = (config: {
   /* The directus instance URL. */
@@ -10,7 +11,7 @@ export const createDirectusHandlers = (config: {
     basePath: config.basePath,
     login: {
       fetch: (email, password) => {
-        return fetch(`${config.url}/auth/login`, {
+        return fetch(sanitizeUrl(`${config.url}/auth/login`), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -33,7 +34,7 @@ export const createDirectusHandlers = (config: {
     },
     refresh: {
       fetch: async (refreshToken: string) => {
-        return fetch(`${config.url}/auth/refresh`, {
+        return fetch(sanitizeUrl(`${config.url}/auth/refresh`), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -53,7 +54,7 @@ export const createDirectusHandlers = (config: {
     },
     logout: {
       fetch: async (refreshToken: string) => {
-        return fetch(`${config.url}/auth/logout`, {
+        return fetch(sanitizeUrl(`${config.url}/auth/logout`), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
