@@ -1,8 +1,8 @@
 declare type RefreshManagerConfig = {
-    getSessionExpiryDate: () => string | null;
     refreshPath: string;
-    shouldRefresh?: (sessionExpirationDate: Date) => boolean;
+    shouldRefresh: () => boolean;
     interval?: number | null;
 };
-export declare const useRefreshSession: ({ getSessionExpiryDate, refreshPath, shouldRefresh, interval, }: RefreshManagerConfig) => void;
+export declare const isLessThan30Seconds: (date: Date | null) => boolean;
+export declare const useRefreshSession: ({ refreshPath, shouldRefresh, interval, }: RefreshManagerConfig) => void;
 export {};

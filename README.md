@@ -289,14 +289,18 @@ This package also exports a `useRefreshSession` hook that can be used to make cl
 ```tsx
 // _app.tsx
 
-import { useRefreshSession } from '@significa/auth-next'
+import { useRefreshSession, isLessThan30Seconds } from '@significa/auth-next'
 
 import { auth } from 'lib/auth'
 
 function MyApp({ Component, pageProps }: AppProps) {
   useRefreshSession({
     refreshPath: auth.server.paths.refresh,
-    getSessionExpiryDate: auth.client.getSessionIndicator,
+    shouldRefresh: () => {
+      const expiryDate = auth.client.getSessionIndicator()
+
+      return expiryDate ? isLessThan30Seconds(new Date(expiryDate)) : false
+    },
   })
 
   return ...
