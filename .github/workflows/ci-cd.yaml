@@ -40,7 +40,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - run: npm ci
+      - run: npm ci --no-fund --prefer-offline --no-audit
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -73,7 +73,7 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - run: npm ci
+      - run: npm ci --no-fund --prefer-offline --no-audit
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -99,7 +99,7 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@significa'
 
-      - run: npm ci
+      - run: npm ci --no-fund --prefer-offline --no-audit
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
