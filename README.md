@@ -2,6 +2,7 @@
 
 This is work in progress and only suitable for internal use.
 
+
 ## Description
 
 This package solves JWT-based authentication by saving the refresh token in an http-only cookie (accessible only server-side) and the access-token + a session indicator with the expiration date in client-acessible cookies.
@@ -12,19 +13,19 @@ This package solves JWT-based authentication by saving the refresh token in an h
 - client-side token refresh (interval + window focus)
 - client-side access token access (e.g.: for client-side API calls)
 
-## Install
 
-Currently this is only available to install directly via GitHub:
+## Using the package
 
-```bash
-yarn add significa/significa-auth-next#TAG_HERE
-```
+1. Generate a new github PAT (Classic Personal Access Token).
+   Grant `read:packages` _Download packages from GitHub Package Registry_.
 
-For example:
+2. Run `npm login --scope=@significa --registry=https://npm.pkg.github.com`.
+   In the interactive CLI set your GitHub handle as the username and the newly generated PAT as the password (email can be anything).
 
-```bash
-yarn add significa/significa-auth-next#v1.0.0
-```
+3. `npm install @significa/auth-next`
+
+More info: [Working with the GitHub npm registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry).
+
 
 ## Configuration
 
