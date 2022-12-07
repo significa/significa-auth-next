@@ -18,12 +18,17 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@significa'
 
       - name: Cache node modules
         id: cache-npm
@@ -39,6 +44,8 @@ jobs:
             ${{ runner.os }}-
 
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: npm run lint
 
@@ -47,12 +54,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: github.event_name != 'release'
+    permissions:
+      contents: read
+      packages: read
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@significa'
 
       - name: Cache node modules
         id: cache-npm
@@ -68,6 +80,8 @@ jobs:
             ${{ runner.os }}-
 
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: npm run build
 
@@ -92,6 +106,8 @@ jobs:
           scope: '@significa'
 
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set package.json version
         run: npm version --no-git-tag-version "${{ github.ref_name }}"
