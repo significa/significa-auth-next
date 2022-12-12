@@ -11,10 +11,7 @@ type RefreshManagerConfig = {
 export const isLessThan30Seconds = (date: Date | null) => {
   if (!date || !(date instanceof Date)) return false
 
-  const time = date.getTime()
-  const nowMinus30Seconds = new Date().getTime() + 30000
-
-  return time < nowMinus30Seconds
+  return new Date().getTime() > date.getTime() - 30000
 }
 
 export const useRefreshSession = ({
