@@ -20,7 +20,11 @@ export const useRefreshSession = ({
   interval = 30000,
 }: RefreshManagerConfig) => {
   const refreshToken = useCallback(async () => {
-    if (shouldRefresh()) await fetch(refreshPath, { credentials: 'include' })
+    try {
+      if (shouldRefresh()) await fetch(refreshPath, { credentials: 'include' })
+    } catch (error) {
+      // noop. no refresh
+    }
   }, [refreshPath, shouldRefresh])
 
   useEffect(
