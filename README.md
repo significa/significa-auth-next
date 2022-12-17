@@ -2,7 +2,6 @@
 
 This is work in progress and only suitable for internal use.
 
-
 ## Description
 
 This package solves JWT-based authentication by saving the refresh token in an http-only cookie (accessible only server-side) and the access-token + a session indicator with the expiration date in client-acessible cookies.
@@ -12,7 +11,6 @@ This package solves JWT-based authentication by saving the refresh token in an h
 - server-side token refresh
 - client-side token refresh (interval + window focus)
 - client-side access token access (e.g.: for client-side API calls)
-
 
 ## Using the package
 
@@ -25,7 +23,6 @@ This package solves JWT-based authentication by saving the refresh token in an h
 3. `npm install @significa/auth-next`
 
 More info: [Working with the GitHub npm registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry).
-
 
 ## Configuration
 
@@ -302,6 +299,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       return expiryDate ? isLessThan30Seconds(new Date(expiryDate)) : false
     },
+    onRefresh: () => {
+      queryClient.invalidateQueries(useMeQuery.getKey())
+    },
+  })
   })
 
   return ...
