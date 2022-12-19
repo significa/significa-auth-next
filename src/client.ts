@@ -1,3 +1,5 @@
+import { getCookieString } from './utils/cookies'
+
 export type ClientCookiesConfig = {
   accessTokenKey: string
   sessionIndicatorKey: string
@@ -13,13 +15,13 @@ export class ClientCookies {
   }
 
   private buildCookie(key: string, value: string, expires?: number) {
-    let cookie = `${key}=${value}`
+    const cookie: Record<string, string | boolean> = { [key]: value }
 
     if (expires) {
-      cookie += `; expires=${new Date(Date.now() + expires).toUTCString()}`
+      cookie.Expires = new Date(Date.now() + expires).toUTCString()
     }
 
-    return cookie
+    return getCookieString(cookie)
   }
 
   public setCookie(key: string, value: string, expires?: number) {

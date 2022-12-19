@@ -40,7 +40,7 @@ export class PagesRestrictions {
     return !!accessToken && !!refreshToken
   }
 
-  public withSessionRefresh = <P = any>(
+  public withSessionRefresh = <P extends { [key: string]: any } = any>(
     getServerSideProps: GetServerSideProps<P> = async () => ({ props: {} as P })
   ): GetServerSideProps<P> => {
     return async (context) => {
@@ -50,7 +50,7 @@ export class PagesRestrictions {
     }
   }
 
-  public withRestriction = <P = any>(
+  public withRestriction = <P extends { [key: string]: any } = any>(
     shouldRedirect: (hasSession: boolean) => string | false,
     getServerSideProps: GetServerSideProps<P> = async () => ({ props: {} as P })
   ): GetServerSideProps<P> => {

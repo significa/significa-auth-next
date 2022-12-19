@@ -1,5 +1,6 @@
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 
+import { getDateDistance } from './utils/date'
 import { useInterval } from './utils/useInterval'
 import { useStableCallback } from './utils/useStableCallback'
 
@@ -10,11 +11,7 @@ type RefreshManagerConfig = {
   interval?: number | null
 }
 
-export const isLessThan30Seconds = (date: Date | null) => {
-  if (!date || !(date instanceof Date)) return false
-
-  return new Date().getTime() > date.getTime() - 30000
-}
+const REFRESH_GRACE_PERIOD_SECONDS = 10
 
 export const useRefreshSession = ({
   refreshPath,
@@ -25,10 +22,22 @@ export const useRefreshSession = ({
   },
 }: RefreshManagerConfig) => {
   const stableOnRefresh = useStableCallback(onRefresh)
+  const lastRefresh = useRef<Date | null>(null)
 
   const refreshToken = useCallback(async () => {
     try {
       if (shouldRefresh()) {
+        if (
+          lastRefresh.current &&
+          getDateDistance(lastRefresh.current) >= -REFRESH_GRACE_PERIOD_SECONDS
+        ) {
+          throw new Error(
+            `Already refreshed session within the last ${REFRESH_GRACE_PERIOD_SECONDS} seconds`
+          )
+        }
+
+        lastRefresh.current = new Date()
+
         const res = await fetch(refreshPath, { credentials: 'include' })
 
         res.ok && stableOnRefresh?.()

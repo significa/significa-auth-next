@@ -2,6 +2,8 @@ import { ServerResponse } from 'http'
 
 import { NextApiRequest, NextApiResponse } from 'next'
 
+import { getCookieString } from './utils/cookies'
+
 const PATHS = {
   login: '/login',
   refresh: '/refresh',
@@ -67,33 +69,15 @@ export class ServerAuth {
   private buildCookie = (
     key: string,
     value: string,
-    config: {
-      expires?: number
-      httpOnly?: boolean
-    } = {}
+    cookie: Record<string, string | boolean> = {}
   ) => {
-    const cookie: Record<string, string | boolean> = {
+    return getCookieString({
       [key]: value,
       Path: '/',
       SameSite: 'Strict',
       Secure: true,
-      HttpOnly: !!config.httpOnly,
-    }
-
-    if (config.expires) {
-      cookie.Expires = new Date(Date.now() + config.expires).toUTCString()
-    }
-
-    return Object.entries(cookie)
-      .map(([key, value]) => {
-        if (typeof value === 'boolean') {
-          return value === true ? key : ''
-        }
-
-        return `${key}=${value}`
-      })
-      .filter(Boolean)
-      .join('; ')
+      ...cookie,
+    })
   }
 
   /**
@@ -104,10 +88,10 @@ export class ServerAuth {
     { accessToken, expires, refreshToken }: SessionPayload
   ) => {
     res.setHeader('Set-Cookie', [
-      this.buildCookie(this.accessTokenKey, accessToken, { expires }),
-      this.buildCookie(this.refreshTokenKey, refreshToken, {
-        httpOnly: true,
+      this.buildCookie(this.accessTokenKey, accessToken, {
+        Expires: new Date(Date.now() + expires).toUTCString(),
       }),
+      this.buildCookie(this.refreshTokenKey, refreshToken, { HttpOnly: true }),
       this.buildCookie(
         this.sessionIndicatorKey,
         new Date(Date.now() + expires).toUTCString()
@@ -120,12 +104,16 @@ export class ServerAuth {
    */
   private clearSessionCookies = (res: ServerResponse) => {
     res.setHeader('Set-Cookie', [
-      this.buildCookie(this.accessTokenKey, '', { expires: -1 }),
-      this.buildCookie(this.refreshTokenKey, '', {
-        httpOnly: true,
-        expires: -1,
+      this.buildCookie(this.accessTokenKey, '', {
+        Expires: new Date(Date.now() - 1).toUTCString(),
       }),
-      this.buildCookie(this.sessionIndicatorKey, '', { expires: -1 }),
+      this.buildCookie(this.refreshTokenKey, '', {
+        HttpOnly: true,
+        Expires: new Date(Date.now() - 1).toUTCString(),
+      }),
+      this.buildCookie(this.sessionIndicatorKey, '', {
+        Expires: new Date(Date.now() - 1).toUTCString(),
+      }),
     ])
     res.setHeader('Clear-Site-Data', ['cookies'])
   }
