@@ -152,20 +152,11 @@ export class ServerAuth {
   /**
    * Uses the provided refresh token to get a new session.
    */
-  public refreshSession = async (
-    res: ServerResponse,
-    refreshToken: string,
-    shouldRetry = true
-  ) => {
+  public refreshSession = async (res: ServerResponse, refreshToken: string) => {
     const response = await this.handlers.refresh.fetch(refreshToken)
 
     if (!response.ok) {
-      if (shouldRetry) {
-        await this.refreshSession(res, refreshToken, false)
-        return
-      } else {
-        throw new Error()
-      }
+      throw new Error('Failed to refresh token')
     }
 
     const data = await this.handlers.refresh.parseResponse(response)
