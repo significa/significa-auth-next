@@ -43,8 +43,6 @@ export type ServerAuthConfig = {
 }
 
 export class ServerAuth {
-  private isRefreshing: boolean
-
   private accessTokenKey: string
   private refreshTokenKey: string
   private sessionIndicatorKey: string
@@ -53,8 +51,6 @@ export class ServerAuth {
   private handlersBasePath: string
 
   constructor(config: ServerAuthConfig) {
-    this.isRefreshing = false
-
     this.accessTokenKey = config.accessTokenKey
     this.refreshTokenKey = config.refreshTokenKey
     this.sessionIndicatorKey = config.sessionIndicatorKey
@@ -76,11 +72,28 @@ export class ServerAuth {
       httpOnly?: boolean
     } = {}
   ) => {
-    return `${key}=${value}; Path=/; SameSite=Strict; Secure${
-      config.expires
-        ? `; Expires=${new Date(Date.now() + config.expires).toUTCString()};`
-        : ''
-    }${config.httpOnly ? '; HttpOnly' : ''}`
+    const cookie: Record<string, string | boolean> = {
+      [key]: value,
+      Path: '/',
+      SameSite: 'Strict',
+      Secure: true,
+      HttpOnly: !!config.httpOnly,
+    }
+
+    if (config.expires) {
+      cookie.Expires = new Date(Date.now() + config.expires).toUTCString()
+    }
+
+    return Object.entries(cookie)
+      .map(([key, value]) => {
+        if (typeof value === 'boolean') {
+          return value === true ? key : ''
+        }
+
+        return `${key}=${value}`
+      })
+      .filter(Boolean)
+      .join('; ')
   }
 
   /**
@@ -139,25 +152,11 @@ export class ServerAuth {
   /**
    * Uses the provided refresh token to get a new session.
    */
-  public refreshSession = async (
-    res: ServerResponse,
-    refreshToken: string,
-    shouldRetry = true
-  ) => {
-    if (this.isRefreshing) {
-      return
-    }
-
-    this.isRefreshing = true
+  public refreshSession = async (res: ServerResponse, refreshToken: string) => {
     const response = await this.handlers.refresh.fetch(refreshToken)
 
     if (!response.ok) {
-      if (shouldRetry) {
-        await this.refreshSession(res, refreshToken, false)
-        return
-      } else {
-        throw new Error()
-      }
+      throw new Error('Failed to refresh token')
     }
 
     const data = await this.handlers.refresh.parseResponse(response)
@@ -169,8 +168,6 @@ export class ServerAuth {
     }
 
     this.setSessionCookies(res, data)
-
-    this.isRefreshing = false
 
     return data
   }
@@ -215,8 +212,6 @@ export class ServerAuth {
           const refreshToken = req.cookies[this.refreshTokenKey]
 
           if (!refreshToken) {
-            this.clearSessionCookies(res)
-
             throw new Error()
           }
 
