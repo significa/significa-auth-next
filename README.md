@@ -297,9 +297,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     shouldRefresh: () => {
       const expiryDate = auth.client.getSessionIndicator()
 
-      if (!expiryDate || !(expiryDate instanceof Date)) return false
+      if (!expiryDate) return false
 
-      return getDateDistance(expiryDate) <= 30
+      return getDateDistance(new Date(expiryDate)) <= 30
     },
     onRefresh: () => {
       queryClient.invalidateQueries(useMeQuery.getKey())
