@@ -115,7 +115,7 @@ export class ServerAuth {
         Expires: new Date(Date.now() - 1).toUTCString(),
       }),
     ])
-    res.setHeader('Clear-Site-Data', ['cookies'])
+    res.setHeader('Clear-Site-Data', ['"cookies"'])
   }
 
   public startSession = async (
