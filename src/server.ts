@@ -74,7 +74,6 @@ export class ServerAuth {
     return getCookieString({
       [key]: value,
       Path: '/',
-      SameSite: 'Strict',
       Secure: true,
       ...cookie,
     })
