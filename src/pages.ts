@@ -40,11 +40,25 @@ export class PagesRestrictions {
     return !!accessToken && !!refreshToken
   }
 
+  private refreshToken = async (context: GetServerSidePropsContext) => {
+    const refreshToken = context.req?.cookies?.[this.refreshTokenKey]
+
+    if (!refreshToken) return false
+
+    try {
+      await this.handleRefresh(context.res, refreshToken)
+    } catch (error) {
+      return false
+    }
+
+    return true
+  }
+
   public withSessionRefresh = <P extends { [key: string]: any } = any>(
     getServerSideProps: GetServerSideProps<P> = async () => ({ props: {} as P })
   ): GetServerSideProps<P> => {
     return async (context) => {
-      await this.checkSession(context)
+      await this.refreshToken(context)
 
       return await getServerSideProps(context)
     }
