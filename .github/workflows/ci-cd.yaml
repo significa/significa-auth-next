@@ -21,4 +21,7 @@ jobs:
       contents: read
       packages: write
     with:
-      lint_command: npm run lint
+      publish_to_github_registry: true
+      publish_to_npm_registry: true
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
