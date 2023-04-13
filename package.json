@@ -3,6 +3,9 @@
   "description": "Auth-related functions to handle access and refresh tokens in NextJS projects",
   "version": "0.0.1-development",
   "repository": "github:significa/significa-auth-next",
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "Significa <development@significa.co>",
   "main": "./lib/cjs/index.js",
   "module": "./lib/esm/index.js",
