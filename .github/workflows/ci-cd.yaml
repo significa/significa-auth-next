@@ -16,7 +16,7 @@ on:
 jobs:
   test-and-publish:
     name: Test and publish
-    uses: significa/actions/.github/workflows/npm-library.yaml@documentation
+    uses: significa/actions/.github/workflows/npm-library.yaml@main
     permissions:
       contents: read
       packages: write
